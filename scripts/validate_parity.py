@@ -97,6 +97,7 @@ def worker(args):
         from flax import nnx
 
         from vggt_jax import VGGT
+        from vggt_jax.layers import _attention_autotuning_cache
 
         model = VGGT.from_pretrained(
             str(args.checkpoint), dtype=getattr(jnp, args.dtype)
@@ -144,6 +145,13 @@ def worker(args):
             "tokamax": tokamax.__version__,
             "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
             "optimization_level": jax.config.jax_optimization_level,
+            "tokamax_autotuning_cache_sha256": (
+                hashlib.sha256(
+                    _attention_autotuning_cache().dumps(prune_errors=True).encode()
+                ).hexdigest()
+                if _attention_autotuning_cache() is not None
+                else None
+            ),
             "device": str(jax.devices()),
         }
     elapsed = time.perf_counter() - start

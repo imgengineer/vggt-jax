@@ -108,6 +108,7 @@ def worker(args):
         from flax import nnx
 
         from vggt_jax import VGGT
+        from vggt_jax.layers import _attention_autotuning_cache
 
         if jax.default_backend() != "gpu":
             raise RuntimeError("This benchmark requires a JAX GPU backend")
@@ -131,6 +132,7 @@ def worker(args):
             key: np.asarray(value, np.float32)
             for key, value in flatten_predictions(output).items()
         }
+        cache = _attention_autotuning_cache()
         meta = {
             "jax": jax.__version__,
             "flax": flax.__version__,
@@ -138,6 +140,11 @@ def worker(args):
             "device": jax.devices()[0].device_kind,
             "execution": "model.jit(): nnx.jit_partial(graph=False) of complete model.forward",
             "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+            "tokamax_autotuning_cache_sha256": (
+                hashlib.sha256(cache.dumps(prune_errors=True).encode()).hexdigest()
+                if cache is not None
+                else None
+            ),
             "optimization_level": jax.config.jax_optimization_level,
             "xla_flags": os.environ.get("XLA_FLAGS", ""),
             "compile_seconds": compile_seconds,

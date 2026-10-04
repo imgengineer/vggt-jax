@@ -22,6 +22,7 @@ vggt-jax = "vggt_jax.cli:main"
 [project.optional-dependencies]
 validation = [
     "einops>=0.8.2",
+    "jax-triton>=0.4.1",
     "torch>=2.14.1",
     "torchvision>=0.29.1",
 ]

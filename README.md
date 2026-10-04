@@ -199,15 +199,15 @@ The reference is the official PyTorch eager `model.forward` with `torch.no_grad(
 
 | Mode | Official PyTorch | JAX / Tokamax O1 | Speedup | Parity |
 |---|---:|---:|---:|---|
-| FP32 cameras, depth and points | 156.25 ms | **139.70 ms** | **1.12×** | Pass |
-| FP32 geometry + five tracked points | 395.12 ms | **153.05 ms** | **2.58×** | Pass |
+| FP32 cameras, depth and points | 156.75 ms | **127.78 ms** | **1.23×** | Pass |
+| FP32 geometry + five tracked points | 406.17 ms | **139.54 ms** | **2.91×** | Pass |
 | BF16 cameras, depth and points | 82.41 ms | **60.76 ms** | **1.36×** | Fail |
 
-**FP32 is the default for numerical parity.** BF16 is faster but fails the selected geometry tolerances. The first JAX compilations took approximately 34 s, 124 s and 31 s respectively; these times are excluded from the table.
+**FP32 is the default for numerical parity.** BF16 is faster but fails the selected geometry tolerances. The BF16 row is the earlier measurement before device-specific kernel tuning. Compilation is excluded from the table and reported separately.
 
-After switching from automatic dispatch to explicit `implementation="triton"`, a fresh five-repeat run measured 139.92 ms for geometry and 152.24 ms with tracking; parity passed in both cases. The full run is recorded in [the explicit-Triton report](reports/speed_explicit_triton.json).
+Tokamax kernel autotuning reduces geometry latency from 139.92 ms to 127.78 ms, an additional 8.7%. Tracking improves from 152.24 ms to 139.54 ms, an additional 8.3%. See [the tuned benchmark](reports/speed_tokamax_tuned.json), [the tracking repeat](reports/speed_tokamax_tracking_repeat.json), and [the earlier explicit-Triton benchmark](reports/speed_explicit_triton.json). The first tuned tracking run had variable PyTorch latency (490–608 ms at p10/p90); the table uses the steadier independent repeat. JAX compilation took 25.5 s for geometry and 89.0 s for the tracking repeat.
 
-Versions, settings, all 20 latency samples and output errors are available in [the full benchmark report](reports/speed_benchmark.json). [The earlier baseline](reports/speed_baseline.json) records JAX timings of 401 ms for FP32 geometry and 416 ms with tracking, before the attention and NNX cache optimizations.
+Versions, settings, all latency samples and output errors are included in the reports. [The earlier mixed-precision benchmark](reports/speed_benchmark.json) records the BF16 comparison. [The earlier baseline](reports/speed_baseline.json) records JAX timings of 401 ms for FP32 geometry and 416 ms with tracking, before the attention and NNX cache optimizations.
 
 ### Numerical parity
 
@@ -217,14 +217,14 @@ The FP32 geometry-plus-tracking benchmark above gives:
 
 | Output | Metric | Measured error |
 |---|---|---:|
-| Camera pose | NRMSE | 4.24e-7 |
-| Depth | NRMSE | 1.55e-6 |
-| World points | NRMSE | 4.70e-6 |
-| Tracks | RMSE | 0.338 pixels |
-| Visibility | MAE | 0.01696 |
-| Tracking confidence | MAE | 0.00111 |
+| Camera pose | NRMSE | 3.97e-7 |
+| Depth | NRMSE | 1.66e-6 |
+| World points | NRMSE | 4.99e-6 |
+| Tracks | RMSE | 0.496 pixels |
+| Visibility | MAE | 0.02026 |
+| Tracking confidence | MAE | 0.00077 |
 
-The optimized implementation also passes [flower two-view validation](reports/parity_flower_optimized.json), [single-view validation](reports/parity_single_optimized.json), and [end-to-end CLI validation](reports/cli_optimized.json). Across the three FP32 input sets, the largest geometry NRMSE is approximately `1.4e-5`. These are measured examples rather than guarantees for every scene.
+The tuned implementation passes [flower two-view validation](reports/parity_flower_tokamax.json), including intermediate features and tracking. The earlier optimized implementation also passes [single-view validation](reports/parity_single_optimized.json) and [end-to-end CLI validation](reports/cli_optimized.json); those inputs use shapes outside the bundled backbone tuning entries. Across the three FP32 input sets, the largest geometry NRMSE is approximately `1.4e-5`. These are measured examples rather than guarantees for every scene.
 
 The tracker amplifies small floating-point differences through iterative high-frequency displacement encoding. Tracking therefore uses pixel RMSE and score MAE for acceptance; individual errors may exceed those averages. Stricter validation is available with `--strict-tracking --track-rmse-limit 0.05 --score-mae-limit 0.001`; the current kitchen two-view results fail those stricter limits.
 
@@ -232,6 +232,8 @@ The tracker amplifies small floating-point differences through iterative high-fr
 <summary>Attention precision and NNX caching</summary>
 
 Attention calls `tokamax.dot_product_attention(..., implementation="triton")` on GPU and `implementation="xla"` on CPU. This explicitly selects Tokamax's fused Pallas Triton FlashAttention kernel for GPU inference instead of relying on automatic dispatch. FP32 attention on NVIDIA SM80+ uses `TF32_TF32_F32_X3`, combining three Tensor Core products with FP32 accumulation. Tracker attention, other devices, BF16 attention, linear layers and convolutions use `HIGHEST`. BF16 mode changes backbone linear/convolution computations; prediction heads remain FP32.
+
+The package includes a serialized Tokamax autotuning cache for the RTX 5090 and the tested FP32 frame/global/virtual-track shapes. It loads lazily, checks the device and Tokamax version, and applies matching entries during JAX tracing. Other shapes use Tokamax's normal configuration selection. Set `VGGT_TOKAMAX_AUTOTUNE` before importing the package to use another cache file; an empty value disables the packaged cache. This cache stores kernel configurations. `model.jit()` separately caches the NNX parameter structure and XLA executable in the process.
 
 Importing `vggt_jax` sets [JAX's optimization level](https://docs.jax.dev/en/latest/config_options.html#optimization-level) to O1 if no explicit configuration exists. Set `JAX_OPTIMIZATION_LEVEL=O2` before running, or call `jax.config.update` to override it.
 
@@ -265,6 +267,23 @@ On the same FP32 geometry input, 20 alternating measurements produced identical 
 Both cache variants pass the parameter-update test. See [the cache comparison](reports/nnx_cache_comparison.json), [GPU profiling](reports/performance_profile.json), and [the attention microbenchmark](reports/attention_benchmark.json). The attention microbenchmark is a separate kernel comparison and does not establish whole-model speedup.
 
 </details>
+
+### Tokamax kernel trials
+
+We tested the implementations that can preserve VGGT's official weights and computation. GPU kernel times use CUPTI, and the script also records synchronized wall time. A faster isolated kernel does not establish a faster complete model.
+
+| Operation | Result on RTX 5090 | Default |
+|---|---|---|
+| FP32 frame attention `[2,930,16,64]` | Triton tuning: 0.372 → 0.241 ms | Tuned Triton for this shape |
+| FP32 global attention `[1,1860,16,64]` | Triton tuning: 0.721 → 0.468 ms | Tuned Triton for this shape |
+| FP32 virtual-track self attention `[2,64,8,48]` | Triton tuning: 0.028 → 0.0036 ms | Tuned Triton for this shape |
+| LayerNorm | Manual/XLA, Triton, and tuned Triton tested; complete geometry inference 139.92 / 140.02 / 140.90 ms | Existing centered FP32 LayerNorm |
+| Biased linear layers | Ordinary matmul compared with one-group Tokamax ragged matmul | Ordinary `HIGHEST` matmul |
+| Other attention backends | XLA and chunked XLA generally slower; cuDNN supports reduced precision, Mosaic rejects SM120 | Triton on GPU, XLA on CPU |
+
+LayerNorm tuning covered backbone, Q/K, dense-head, and tracker shapes. Those complete-model trials held attention at its untuned Triton configuration and produced no consistent improvement. VGGT uses biased GELU MLPs, whereas Tokamax GLU adds a gating branch; it cannot replace these layers while preserving the model. Tokamax's cross-entropy and triangle-multiplication operators are absent from VGGT inference.
+
+See [all applicable kernel trials](reports/tokamax_kernels.json), [autotuning results](reports/tokamax_autotune.json), and [complete-model LayerNorm trials](reports/tokamax_layernorm_model.json). A further [16-config TF32x3 ragged matmul trial](reports/tokamax_ragged_tiles.json) used smaller tiles to fit SM120 shared memory; its best MLP-up kernel was 0.466 ms versus 0.280 ms for ordinary matmul. Unsupported configurations and numerical differences are recorded alongside timings.
 
 ## Reproducing the Results
 
@@ -300,6 +319,21 @@ uv run --extra validation python scripts/benchmark_vggt.py \
     --work-dir .cache/speed_reproduced --report reports/speed_reproduced.json
 uv run python scripts/benchmark_nnx_cache.py
 uv run python scripts/benchmark_attention.py
+uv run --extra validation python scripts/benchmark_tokamax.py
+uv run --extra validation python scripts/benchmark_tokamax.py \
+    --op attention --filter frame/float32 --autotune \
+    --autotune-cache .cache/frame_autotune.json \
+    --report reports/frame_autotune_reproduced.json
+```
+
+Tokamax ragged Triton matmul uses `jax-triton`, included in the `validation` extra. If the system `ptxas` is older than the PTX generated by Triton, point `PATH` and `--xla_gpu_cuda_data_dir` at the CUDA toolkit installed in the environment:
+
+```bash
+VGGT_CUDA_DIR="$(uv run python -c 'import jax; from pathlib import Path; print(Path(jax.__file__).parent.parent / "nvidia/cu13")')"
+PATH="$VGGT_CUDA_DIR/bin:$PATH" \
+XLA_FLAGS="--xla_gpu_enable_command_buffer= --xla_gpu_cuda_data_dir=$VGGT_CUDA_DIR" \
+uv run --extra validation python scripts/benchmark_tokamax.py --op linear \
+    --report reports/linear_reproduced.json
 ```
 
 Validation downloads the reference source at the pinned commit and uses two real kitchen images with five subpixel/boundary queries. It compares every prediction, all four camera refinements, and intermediate features at layers 4, 11, 17 and 23. Reports record input hashes, shapes, dependency versions, RMSE, NRMSE, MAE and maximum absolute error.

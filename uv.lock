@@ -1293,6 +1293,20 @@ with-cuda = [
 ]
 
 [[package]]
+name = "jax-triton"
+version = "0.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "absl-py" },
+    { name = "jax" },
+    { name = "triton" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a9/2d/b9087f75f2398a731eb9e4d4e98fd5d967b6553ad5d65eae7a4bb7747b5c/jax_triton-0.4.1.tar.gz", hash = "sha256:5e6533dd4cca34d76b9c70646bcdf801649bbfc1ab43e658262f27095ef554bc", size = 24206, upload-time = "2026-09-24T13:37:11.226Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/d3/fc3b1fd5817e87871fd649f9617f13f58b812c5efddffbc94c50f358cc5a/jax_triton-0.4.1-py3-none-any.whl", hash = "sha256:123e61fb87fb606016e450142b9bec588dade855a4e3a5d25174244ee3babe71", size = 23859, upload-time = "2026-09-24T13:37:09.9Z" },
+]
+
+[[package]]
 name = "jaxlib"
 version = "0.11.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3160,6 +3174,7 @@ dependencies = [
 [package.optional-dependencies]
 validation = [
     { name = "einops" },
+    { name = "jax-triton" },
     { name = "torch" },
     { name = "torchvision" },
 ]
@@ -3177,6 +3192,7 @@ requires-dist = [
     { name = "grain", specifier = ">=0.2.18" },
     { name = "huggingface-hub", specifier = ">=2.1.1" },
     { name = "jax", extras = ["cuda13"], specifier = ">=0.11.2" },
+    { name = "jax-triton", marker = "extra == 'validation'", specifier = ">=0.4.1" },
     { name = "numpy", specifier = ">=2.5.3" },
     { name = "pillow", specifier = ">=12.3.0" },
     { name = "safetensors", specifier = ">=0.8.0" },

@@ -2,11 +2,39 @@
 # JAX adaptation; see LICENSE and NOTICE for upstream attribution.
 """NNX layers with the parameter names and layouts of the official checkpoints."""
 
+import contextlib
+import functools
+import os
+from pathlib import Path
+
 import jax
 import jax.numpy as jnp
 import numpy as np
 import tokamax
 from flax import nnx
+
+
+@functools.cache
+def _attention_autotuning_cache():
+    """Load an optional device-specific Tokamax cache for known shapes."""
+    if jax.default_backend() != "gpu":
+        return None
+    cache_path = os.environ.get("VGGT_TOKAMAX_AUTOTUNE")
+    if cache_path is None:
+        cache_path = Path(__file__).with_name("tokamax_cache") / "rtx5090.json"
+    try:
+        path = Path(cache_path)
+        if not path.is_file():
+            return None
+        cache = tokamax.AutotuningResult.loads(path.read_text())
+        if (
+            cache.device_kind != jax.devices()[0].device_kind
+            or cache.tokamax_version != tokamax.__version__
+        ):
+            return None
+        return cache
+    except (OSError, ValueError, TypeError):
+        return None
 
 
 def parameter(shape, rngs, scale=0.02):
@@ -137,14 +165,22 @@ def attention_implementation():
 
 
 def attention(q, k, v, *, scale=None, precision=None):
-    return tokamax.dot_product_attention(
-        q,
-        k,
-        v,
-        scale=scale,
-        precision=attention_precision(q.dtype) if precision is None else precision,
-        implementation=attention_implementation(),
+    implementation = attention_implementation()
+    cache = _attention_autotuning_cache()
+    cache_context = (
+        cache
+        if implementation == "triton" and cache is not None
+        else contextlib.nullcontext()
     )
+    with cache_context:
+        return tokamax.dot_product_attention(
+            q,
+            k,
+            v,
+            scale=scale,
+            precision=attention_precision(q.dtype) if precision is None else precision,
+            implementation=implementation,
+        )
 
 
 class Attention(nnx.Module):

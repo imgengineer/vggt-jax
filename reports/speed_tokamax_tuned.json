@@ -1,0 +1,503 @@
+{
+  "date_utc": "2026-10-04T06:48:05.180543+00:00",
+  "reference_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "checkpoint": ".cache/model.safetensors",
+  "input_shape": [
+    1,
+    2,
+    3,
+    350,
+    518
+  ],
+  "input_sha256": "c9fc80ca7b1127fe285a97a6df2775320b388051ff29138f45b485492c9ab111",
+  "warmup": 3,
+  "repeats": 20,
+  "timing": "synchronized wall time, model inference only; excludes loading, compilation, preprocessing, host/device transfers and output serialization",
+  "gpu": "NVIDIA GeForce RTX 5090, 615.71.09, 32607 MiB",
+  "parity_limits": {
+    "nrmse": 0.001,
+    "track_rmse_pixels": 1.0,
+    "score_mae": 0.05
+  },
+  "cases": {
+    "float32": {
+      "dtype": "float32",
+      "query_count": 0,
+      "torch": {
+        "torch": "2.14.1+cu130",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "official model.forward, eager, torch.no_grad",
+        "attention": "official torch.nn.functional.scaled_dot_product_attention",
+        "tf32": false,
+        "compile_seconds": null,
+        "first_forward_seconds": 0.45035467203706503,
+        "median_ms": 156.7524469573982,
+        "p10_ms": 156.14657307742164,
+        "p90_ms": 158.220545144286,
+        "samples_ms": [
+          156.6505319206044,
+          156.378070008941,
+          156.7243419121951,
+          156.15712909493595,
+          156.50530101265758,
+          157.09492401219904,
+          156.36408992577344,
+          156.05156891979277,
+          157.8254560008645,
+          156.5141809405759,
+          156.84983297251165,
+          156.0171589953825,
+          156.78055200260133,
+          157.78632601723075,
+          158.72546995524317,
+          156.84896300081164,
+          157.58801496122032,
+          158.45037891995162,
+          156.47538099437952,
+          158.19500805810094
+        ],
+        "setup_seconds": 5.182576225022785
+      },
+      "jax": {
+        "jax": "0.11.2",
+        "flax": "0.12.10",
+        "tokamax": "0.0.15",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "model.jit(): nnx.jit_partial(graph=False) of complete model.forward",
+        "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+        "optimization_level": "O1",
+        "xla_flags": "--xla_gpu_enable_command_buffer=",
+        "compile_seconds": 25.478781520971097,
+        "first_forward_seconds": 0.16228272498119622,
+        "median_ms": 127.78493447694927,
+        "p10_ms": 127.43545984849334,
+        "p90_ms": 128.12749100849032,
+        "samples_ms": [
+          126.92806601990014,
+          127.26113700773567,
+          127.5088379625231,
+          127.45482905302197,
+          127.47325806412846,
+          128.1469309469685,
+          127.61970900464803,
+          127.90717999450862,
+          127.72696895990521,
+          127.7445899322629,
+          127.60703905951232,
+          128.23253101669252,
+          127.7860898990184,
+          127.81334994360805,
+          127.78377905488014,
+          127.93669092934579,
+          127.91706004645675,
+          128.12533101532608,
+          127.92716000694782,
+          128.0756910564378
+        ],
+        "setup_seconds": 2.8571466049179435
+      },
+      "speedup_torch_over_jax": 1.2266895749410451,
+      "parity_passed": true,
+      "metrics": {
+        "pose_enc": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.4788131213410654e-07,
+          "max_abs": 4.76837158203125e-07,
+          "rmse": 2.0270267587671796e-07,
+          "nrmse": 3.89032958715875e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/0": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 7.635551608271069e-08,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.0836388565691746e-07,
+          "nrmse": 2.079156788131611e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/1": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 8.364673299689053e-08,
+          "max_abs": 2.384185791015625e-07,
+          "rmse": 1.0970540707632576e-07,
+          "nrmse": 2.105333176558005e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/2": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.1833551777979463e-07,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.6427630372675334e-07,
+          "nrmse": 3.152746266002189e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/3": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.4788131213410654e-07,
+          "max_abs": 4.76837158203125e-07,
+          "rmse": 2.0270267587671796e-07,
+          "nrmse": 3.89032958715875e-07,
+          "finite": true,
+          "passed": true
+        },
+        "depth": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            1
+          ],
+          "mae": 7.029662655653115e-07,
+          "max_abs": 5.054473876953125e-05,
+          "rmse": 1.8831827859069503e-06,
+          "nrmse": 1.5288323953321222e-06,
+          "finite": true,
+          "passed": true
+        },
+        "depth_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.7182254949065774e-05,
+          "max_abs": 0.0007233619689941406,
+          "rmse": 2.7578760010611437e-05,
+          "nrmse": 2.454360617027757e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            3
+          ],
+          "mae": 5.752582215475566e-07,
+          "max_abs": 0.0007873773574829102,
+          "rmse": 3.8468156203406644e-06,
+          "nrmse": 4.958855227266854e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.5534103344108804e-05,
+          "max_abs": 0.0004048347473144531,
+          "rmse": 2.4934026059226512e-05,
+          "nrmse": 2.1253691743088123e-06,
+          "finite": true,
+          "passed": true
+        },
+        "images": {
+          "shape": [
+            1,
+            2,
+            3,
+            350,
+            518
+          ],
+          "mae": 0.0,
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "nrmse": 0.0,
+          "finite": true,
+          "passed": true
+        }
+      }
+    },
+    "float32-tracking": {
+      "dtype": "float32",
+      "query_count": 5,
+      "torch": {
+        "torch": "2.14.1+cu130",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "official model.forward, eager, torch.no_grad",
+        "attention": "official torch.nn.functional.scaled_dot_product_attention",
+        "tf32": false,
+        "compile_seconds": null,
+        "first_forward_seconds": 0.7852902959566563,
+        "median_ms": 541.5033170138486,
+        "p10_ms": 490.4697412159294,
+        "p90_ms": 607.7437027706765,
+        "samples_ms": [
+          382.27335398551077,
+          572.305417037569,
+          536.7186459479854,
+          551.9704410107806,
+          539.3219980178401,
+          543.6846360098571,
+          634.5789489569142,
+          519.9379859259352,
+          604.9550840398297,
+          571.6156340204179,
+          619.8371079517528,
+          486.7394950706512,
+          490.8842130098492,
+          504.9736719811335,
+          606.3999910838902,
+          517.3364649526775,
+          509.10343904979527,
+          553.2179470174015,
+          586.0080439597368,
+          534.8506990121678
+        ],
+        "setup_seconds": 5.021411263966002
+      },
+      "jax": {
+        "jax": "0.11.2",
+        "flax": "0.12.10",
+        "tokamax": "0.0.15",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "model.jit(): nnx.jit_partial(graph=False) of complete model.forward",
+        "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+        "tokamax_autotuning_cache_sha256": "607afd31617e881b9b0bdc16cb08e16dcba383136463ff6ea9d1d60c6b0c7f5a",
+        "optimization_level": "O1",
+        "xla_flags": "--xla_gpu_enable_command_buffer=",
+        "compile_seconds": 132.2220133789815,
+        "first_forward_seconds": 0.21596543199848384,
+        "median_ms": 140.9025055472739,
+        "p10_ms": 139.80468494119123,
+        "p90_ms": 154.7700777300634,
+        "samples_ms": [
+          143.58995703514665,
+          149.8599419137463,
+          139.58802993874997,
+          139.8095799377188,
+          219.73420795984566,
+          142.35846104566008,
+          141.30161702632904,
+          139.76062997244298,
+          143.5933670727536,
+          140.34650195389986,
+          145.69471508730203,
+          141.9662000844255,
+          140.31959301792085,
+          140.1008008979261,
+          198.9613000769168,
+          140.50339406821877,
+          145.3932139556855,
+          140.44801297131926,
+          140.06526104640216,
+          140.35946293734014
+        ],
+        "setup_seconds": 3.175521349068731
+      },
+      "speedup_torch_over_jax": 3.843106372811589,
+      "parity_passed": true,
+      "metrics": {
+        "pose_enc": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.5591154402096032e-07,
+          "max_abs": 5.364418029785156e-07,
+          "rmse": 2.1704948212281295e-07,
+          "nrmse": 4.165677727379468e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/0": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 7.340632792976167e-08,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.0980516580775191e-07,
+          "nrmse": 2.1068103499344267e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/1": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 8.527917493160606e-08,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.1836597997766317e-07,
+          "nrmse": 2.271536392453273e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/2": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.2229434610667846e-07,
+          "max_abs": 4.172325134277344e-07,
+          "rmse": 1.7202458923487048e-07,
+          "nrmse": 3.30144925997914e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/3": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.5591154402096032e-07,
+          "max_abs": 5.364418029785156e-07,
+          "rmse": 2.1704948212281295e-07,
+          "nrmse": 4.165677727379468e-07,
+          "finite": true,
+          "passed": true
+        },
+        "depth": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            1
+          ],
+          "mae": 7.540158520597026e-07,
+          "max_abs": 5.8531761169433594e-05,
+          "rmse": 2.04557634061136e-06,
+          "nrmse": 1.660669054568401e-06,
+          "finite": true,
+          "passed": true
+        },
+        "depth_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.4727014372247526e-05,
+          "max_abs": 0.0007781982421875,
+          "rmse": 2.5239002130250498e-05,
+          "nrmse": 2.2461348087343945e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            3
+          ],
+          "mae": 5.855574071310818e-07,
+          "max_abs": 0.0008630752563476562,
+          "rmse": 3.8714497790146835e-06,
+          "nrmse": 4.990610642281823e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.4043413862890126e-05,
+          "max_abs": 0.00042724609375,
+          "rmse": 2.283743704722986e-05,
+          "nrmse": 1.9466565329284064e-06,
+          "finite": true,
+          "passed": true
+        },
+        "track": {
+          "shape": [
+            1,
+            2,
+            5,
+            2
+          ],
+          "mae": 0.17648441791534425,
+          "max_abs": 1.073638916015625,
+          "rmse": 0.3535756903472124,
+          "nrmse": 0.0014282815991498046,
+          "finite": true,
+          "passed": true
+        },
+        "vis": {
+          "shape": [
+            1,
+            2,
+            5
+          ],
+          "mae": 0.026514267921447753,
+          "max_abs": 0.08765065670013428,
+          "rmse": 0.04251840309381946,
+          "nrmse": 0.053073576354401054,
+          "finite": true,
+          "passed": true
+        },
+        "conf": {
+          "shape": [
+            1,
+            2,
+            5
+          ],
+          "mae": 0.000750271393917501,
+          "max_abs": 0.004261322319507599,
+          "rmse": 0.0015455160556594857,
+          "nrmse": 0.0021040229740039705,
+          "finite": true,
+          "passed": true
+        },
+        "images": {
+          "shape": [
+            1,
+            2,
+            3,
+            350,
+            518
+          ],
+          "mae": 0.0,
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "nrmse": 0.0,
+          "finite": true,
+          "passed": true
+        }
+      }
+    }
+  }
+}

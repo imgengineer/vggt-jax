@@ -18,7 +18,7 @@ VGGT-JAX predicts camera parameters, depth maps, world-space point maps and poin
 - **Complete prediction heads:** DINOv2 encoder, alternating frame/global attention, iterative camera prediction, depth/point DPT heads, and the iterative tracker.
 - **Tokamax high-performance attention:** GPU inference explicitly uses the fused Pallas Triton FlashAttention kernel; CPU uses Tokamax's XLA implementation for tests.
 - **JAX O1 by default:** reusable compiled inference through `model.jit()`, with model parameters kept as `nnx.Param`.
-- **Measured parity and performance:** the tested FP32 runs meet the documented tolerances. On an RTX 5090, inference takes 140 ms for geometry and 153 ms with five tracked points, versus 156 ms and 395 ms for the official PyTorch eager baseline.
+- **Measured parity and performance:** the documented two-view FP32 runs meet the selected tolerances. The ten-view geometry run passes, while tracking exceeds the one-pixel limit; see the measurements and diagnosis below.
 
 This implementation targets upstream commit [`a288dd0`](https://github.com/facebookresearch/vggt/tree/a288dd0f14786c93483e45524328726ab7b1b4ce). The timings below apply to that reference, the tested inputs, and the recorded environment.
 
@@ -249,6 +249,25 @@ The tuned implementation passes [flower two-view validation](reports/parity_flow
 
 The tracker amplifies small floating-point differences through iterative high-frequency displacement encoding. Tracking therefore uses pixel RMSE and score MAE for acceptance; individual errors may exceed those averages. Stricter validation is available with `--strict-tracking --track-rmse-limit 0.05 --score-mae-limit 0.001`; the current kitchen two-view results fail those stricter limits.
 
+#### Tracking divergence diagnosis
+
+The ten-view error is amplified by `flow_embedding`: the highest displacement frequency is `968.75` radians per feature-map pixel, or a wavelength of approximately `0.013` image pixels at stride two. Small coordinate differences therefore change the sin/cos inputs to the next refinement substantially.
+
+To isolate this from backbone differences, both trackers received identical official DPT feature maps. Each of the 24 update blocks and its attention module was also replayed independently on its exact PyTorch input. The largest block NRMSE was `3.44e-7`, attention NRMSE `4.21e-7`, and feature GroupNorm NRMSE `7.19e-8`. Replaying the flow encoding on identical displacement inputs produced bit-identical GPU results.
+
+| Refinement | JAX/PyTorch track RMSE, shared features | With official flow embeddings supplied |
+|---|---:|---:|
+| 1 | 0.0000461 px | 0.0000461 px |
+| 2 | 0.0528 px | 0.000134 px |
+| 3 | 2.409 px | 0.0000941 px |
+| 4 | 1.876 px | 0.000337 px |
+
+Supplying the official flow embeddings cuts the coordinate-to-encoding feedback while leaving correlations, feature updates and coordinate accumulation in JAX. It is a diagnostic intervention, not a production inference mode. As a separate control, changing only the first coordinate delta by **one float32 ULP** in the official PyTorch tracker produced final RMSEs of `2.19` px and `2.48` px for positive and negative perturbations. These experiments locate the amplification in the iterative flow encoding; they do not indicate a weight-layout, stride, or large attention error.
+
+In the complete-model ten-view benchmark, the two boundary queries account for most of the error (`4.46` and `2.48` px RMSE); the three interior queries together have `0.284` px RMSE. All five queries remain part of the one-pixel acceptance check. Diagnostic compilation boundaries differ from the complete-model benchmark, so their final RMSEs differ.
+
+See [the reproducible diagnostic](scripts/debug_tracking.py) and [all module replays and controlled perturbations](reports/tracking_debug_10views.json). The default Tokamax Triton inference path is unchanged.
+
 <details>
 <summary>Attention precision and NNX caching</summary>
 
@@ -362,6 +381,15 @@ uv run --extra validation python scripts/benchmark_tokamax.py --op linear \
 Validation downloads the reference source at the pinned commit and uses two real kitchen images with five subpixel/boundary queries. It compares every prediction, all four camera refinements, and intermediate features at layers 4, 11, 17 and 23. Reports record input hashes, shapes, dependency versions, RMSE, NRMSE, MAE and maximum absolute error.
 
 Use `--images`, `--frames`, `--batch-size`, or `--mode pad` for other validation inputs. The speed benchmark supports `--case float32`, `--case float32-tracking`, and `--case bfloat16`. The parity validator exits with a nonzero status when tolerances fail; the speed benchmark records the parity result alongside its timings.
+
+To diagnose tracking on saved validation inputs, run:
+
+```bash
+uv run --extra validation python scripts/debug_tracking.py \
+    --inputs .cache/parity/inputs.npz --report reports/tracking_debug_reproduced.json
+```
+
+For the ten-view sequence, create inputs with `validate_parity.py --frames 10 --work-dir .cache/ten_views` and pass `.cache/ten_views/inputs.npz` to the diagnostic. The validator may exit with a tracking failure after saving those inputs. The diagnostic runs sequential PyTorch/JAX processes, extracts official feature maps, checks all update blocks on shared inputs, and measures the flow-feedback and one-ULP interventions.
 
 Weights, reference checkouts, environments and prediction arrays are excluded from Git; only source, tests, the lockfile and JSON reports are published.
 

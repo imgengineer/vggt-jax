@@ -1,0 +1,271 @@
+{
+  "passed": true,
+  "reference_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "checkpoint": ".cache/model.safetensors",
+  "dtype": "float32",
+  "images": [
+    ".reference/vggt/examples/llff_flower/images/000.png",
+    ".reference/vggt/examples/llff_flower/images/001.png"
+  ],
+  "input_shape": [
+    1,
+    2,
+    3,
+    392,
+    518
+  ],
+  "input_sha256": "168988539d886d717a4d9b53516cb961c59cf5e9c6a01ff0b7b7f5979db11a8e",
+  "nrmse_limit": 0.001,
+  "track_rmse_limit_pixels": 1.0,
+  "score_mae_limit": 0.05,
+  "strict_tracking": false,
+  "torch": {
+    "torch": "2.14.1+cu130",
+    "device": "cuda",
+    "elapsed_seconds_with_loading_and_compilation": 5.939806062960997
+  },
+  "jax": {
+    "jax": "0.11.2",
+    "flax": "0.12.10",
+    "tokamax": "0.0.15",
+    "attention": "tokamax.dot_product_attention(implementation=None, precision=HIGHEST)",
+    "device": "[CudaDevice(id=0)]",
+    "elapsed_seconds_with_loading_and_compilation": 84.78094119101297
+  },
+  "metrics": {
+    "images": {
+      "shape": [
+        1,
+        2,
+        3,
+        392,
+        518
+      ],
+      "mae": 0.0,
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "nrmse": 0.0,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/0": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 6.09628235300382e-08,
+      "max_abs": 1.993030309677124e-07,
+      "rmse": 8.493141130058081e-08,
+      "nrmse": 1.5752195971382061e-07,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/1": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 9.039973115755453e-08,
+      "max_abs": 2.384185791015625e-07,
+      "rmse": 1.1897966701299463e-07,
+      "nrmse": 2.2056462404482393e-07,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/2": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 1.0805181065936469e-07,
+      "max_abs": 3.5762786865234375e-07,
+      "rmse": 1.4819670792303902e-07,
+      "nrmse": 2.746831629521016e-07,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/3": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 1.133515373415624e-07,
+      "max_abs": 3.5762786865234375e-07,
+      "rmse": 1.5630867263678952e-07,
+      "nrmse": 2.896980611418939e-07,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 1.133515373415624e-07,
+      "max_abs": 3.5762786865234375e-07,
+      "rmse": 1.5630867263678952e-07,
+      "nrmse": 2.896980611418939e-07,
+      "finite": true,
+      "passed": true
+    },
+    "depth": {
+      "shape": [
+        1,
+        2,
+        392,
+        518,
+        1
+      ],
+      "mae": 1.1217400646502785e-06,
+      "max_abs": 3.8623809814453125e-05,
+      "rmse": 1.4534537278946649e-06,
+      "nrmse": 1.3787953980517354e-06,
+      "finite": true,
+      "passed": true
+    },
+    "depth_conf": {
+      "shape": [
+        1,
+        2,
+        392,
+        518
+      ],
+      "mae": 6.122236184763501e-07,
+      "max_abs": 1.1086463928222656e-05,
+      "rmse": 1.109952847336718e-06,
+      "nrmse": 9.56718881415421e-07,
+      "finite": true,
+      "passed": true
+    },
+    "world_points": {
+      "shape": [
+        1,
+        2,
+        392,
+        518,
+        3
+      ],
+      "mae": 6.368510800489244e-07,
+      "max_abs": 0.0001995563507080078,
+      "rmse": 1.302230182854523e-06,
+      "nrmse": 2.0493673011859937e-06,
+      "finite": true,
+      "passed": true
+    },
+    "world_points_conf": {
+      "shape": [
+        1,
+        2,
+        392,
+        518
+      ],
+      "mae": 5.148902456770363e-07,
+      "max_abs": 2.0742416381835938e-05,
+      "rmse": 1.1334014036257472e-06,
+      "nrmse": 1.031413414813104e-06,
+      "finite": true,
+      "passed": true
+    },
+    "vis": {
+      "shape": [
+        1,
+        2,
+        5
+      ],
+      "mae": 0.00885167419910431,
+      "max_abs": 0.027390241622924805,
+      "rmse": 0.013374455597624901,
+      "nrmse": 0.01626948835371562,
+      "finite": true,
+      "passed": true
+    },
+    "conf": {
+      "shape": [
+        1,
+        2,
+        5
+      ],
+      "mae": 0.004195289313793182,
+      "max_abs": 0.01743309199810028,
+      "rmse": 0.0070238829678421835,
+      "nrmse": 0.009675300571318421,
+      "finite": true,
+      "passed": true
+    },
+    "track": {
+      "shape": [
+        1,
+        2,
+        5,
+        2
+      ],
+      "mae": 0.044932761788368226,
+      "max_abs": 0.2715545892715454,
+      "rmse": 0.09141461263141276,
+      "nrmse": 0.0003391305561351628,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/4": {
+      "shape": [
+        1,
+        2,
+        1041,
+        2048
+      ],
+      "mae": 3.299960874568348e-07,
+      "max_abs": 2.5331974029541016e-05,
+      "rmse": 4.5303486208633964e-07,
+      "nrmse": 3.1701785783242783e-06,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/11": {
+      "shape": [
+        1,
+        2,
+        1041,
+        2048
+      ],
+      "mae": 4.728746773938616e-07,
+      "max_abs": 2.9325485229492188e-05,
+      "rmse": 6.679071665471125e-07,
+      "nrmse": 4.1291527431790395e-06,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/17": {
+      "shape": [
+        1,
+        2,
+        1041,
+        2048
+      ],
+      "mae": 2.042711326130186e-06,
+      "max_abs": 0.0001888871192932129,
+      "rmse": 3.140877483750744e-06,
+      "nrmse": 4.883213160762399e-06,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/23": {
+      "shape": [
+        1,
+        2,
+        1041,
+        2048
+      ],
+      "mae": 3.6682510685206598e-06,
+      "max_abs": 0.00022530555725097656,
+      "rmse": 5.396488339062033e-06,
+      "nrmse": 2.3300903854066212e-06,
+      "finite": true,
+      "passed": true
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "jax": "0.11.2",
+  "tokamax": "0.0.15",
+  "optimization_level": "O1",
+  "device": "[CudaDevice(id=0)]",
+  "gpu_gradient_finite": true,
+  "results": {
+    "float32": {
+      "shape": [
+        1,
+        2048,
+        16,
+        64
+      ],
+      "precision": "TF32_TF32_F32_X3",
+      "median_ms": {
+        "tokamax": 0.9858644916675985,
+        "jax_xla": 0.9117540321312845
+      },
+      "speedup": 0.9248269309193239,
+      "nrmse_vs_xla": 9.628518000681652e-07,
+      "custom_kernel_in_hlo": true
+    },
+    "bfloat16": {
+      "shape": [
+        1,
+        2048,
+        16,
+        64
+      ],
+      "precision": "HIGHEST",
+      "median_ms": {
+        "tokamax": 0.15899050049483776,
+        "jax_xla": 0.5581724690273404
+      },
+      "speedup": 3.5107284227051268,
+      "nrmse_vs_xla": 0.0029980591498315334,
+      "custom_kernel_in_hlo": true
+    }
+  }
+}

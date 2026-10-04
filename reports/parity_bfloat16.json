@@ -1,0 +1,271 @@
+{
+  "passed": false,
+  "reference_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "checkpoint": ".cache/model.safetensors",
+  "dtype": "bfloat16",
+  "images": [
+    ".reference/vggt/examples/kitchen/images/00.png",
+    ".reference/vggt/examples/kitchen/images/01.png"
+  ],
+  "input_shape": [
+    1,
+    2,
+    3,
+    350,
+    518
+  ],
+  "input_sha256": "c9fc80ca7b1127fe285a97a6df2775320b388051ff29138f45b485492c9ab111",
+  "nrmse_limit": 0.05,
+  "track_rmse_limit_pixels": 5,
+  "torch": {
+    "torch": "2.14.1+cu130",
+    "device": "cuda",
+    "elapsed_seconds_with_loading_and_compilation": 6.0732836610404775
+  },
+  "jax": {
+    "jax": "0.11.2",
+    "flax": "0.12.10",
+    "tokamax": "0.0.15",
+    "attention": "tokamax.dot_product_attention(implementation=None, precision=HIGHEST)",
+    "device": "[CudaDevice(id=0)]",
+    "elapsed_seconds_with_loading_and_compilation": 80.3733931670431
+  },
+  "metrics": {
+    "images": {
+      "shape": [
+        1,
+        2,
+        3,
+        350,
+        518
+      ],
+      "mae": 0.0,
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "nrmse": 0.0,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/0": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 0.0004392136792780042,
+      "max_abs": 0.0020569562911987305,
+      "rmse": 0.0008369814741818922,
+      "nrmse": 0.0016051680913931026,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/1": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 0.0004289118541136203,
+      "max_abs": 0.0020520538091659546,
+      "rmse": 0.0008199493665741759,
+      "nrmse": 0.0015728470691054985,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/2": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 0.00042837746114956745,
+      "max_abs": 0.0020583271980285645,
+      "rmse": 0.0008189148824321547,
+      "nrmse": 0.0015709429090277132,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc_list/3": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 0.0004286269998172227,
+      "max_abs": 0.0020619630813598633,
+      "rmse": 0.0008185410248082951,
+      "nrmse": 0.001570274348824986,
+      "finite": true,
+      "passed": true
+    },
+    "pose_enc": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "mae": 0.0004286269998172227,
+      "max_abs": 0.0020619630813598633,
+      "rmse": 0.0008185410248082951,
+      "nrmse": 0.001570274348824986,
+      "finite": true,
+      "passed": true
+    },
+    "depth": {
+      "shape": [
+        1,
+        2,
+        350,
+        518,
+        1
+      ],
+      "mae": 0.004559519837820524,
+      "max_abs": 0.23930025100708008,
+      "rmse": 0.010622868303387264,
+      "nrmse": 0.008648702931670006,
+      "finite": true,
+      "passed": true
+    },
+    "depth_conf": {
+      "shape": [
+        1,
+        2,
+        350,
+        518
+      ],
+      "mae": 0.15927792014696948,
+      "max_abs": 1.5007219314575195,
+      "rmse": 0.22354470207830926,
+      "nrmse": 0.020028803196200748,
+      "finite": true,
+      "passed": true
+    },
+    "world_points": {
+      "shape": [
+        1,
+        2,
+        350,
+        518,
+        3
+      ],
+      "mae": 0.0026945697291871035,
+      "max_abs": 0.8421341180801392,
+      "rmse": 0.014044207699055088,
+      "nrmse": 0.018146986498351485,
+      "finite": true,
+      "passed": true
+    },
+    "world_points_conf": {
+      "shape": [
+        1,
+        2,
+        350,
+        518
+      ],
+      "mae": 0.10876992599647214,
+      "max_abs": 1.0642337799072266,
+      "rmse": 0.15641899220792557,
+      "nrmse": 0.013399888708340302,
+      "finite": true,
+      "passed": true
+    },
+    "vis": {
+      "shape": [
+        1,
+        2,
+        5
+      ],
+      "mae": 0.021474453806877136,
+      "max_abs": 0.06767129898071289,
+      "rmse": 0.032642857100901,
+      "nrmse": 0.04091743806006122,
+      "finite": true,
+      "passed": true
+    },
+    "conf": {
+      "shape": [
+        1,
+        2,
+        5
+      ],
+      "mae": 0.0018744160770438612,
+      "max_abs": 0.009262174367904663,
+      "rmse": 0.0034347218947902223,
+      "nrmse": 0.004684481118546263,
+      "finite": true,
+      "passed": true
+    },
+    "track": {
+      "shape": [
+        1,
+        2,
+        5,
+        2
+      ],
+      "mae": 2.431968355178833,
+      "max_abs": 30.170257568359375,
+      "rmse": 7.440258329940801,
+      "nrmse": 0.03001512406567819,
+      "finite": true,
+      "passed": false
+    },
+    "aggregator/4": {
+      "shape": [
+        1,
+        2,
+        930,
+        2048
+      ],
+      "mae": 0.002057905561804855,
+      "max_abs": 0.22956430912017822,
+      "rmse": 0.003080895724342822,
+      "nrmse": 0.021243169799352972,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/11": {
+      "shape": [
+        1,
+        2,
+        930,
+        2048
+      ],
+      "mae": 0.0027986881347246157,
+      "max_abs": 0.42005181312561035,
+      "rmse": 0.004876729652025992,
+      "nrmse": 0.02998882807467368,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/17": {
+      "shape": [
+        1,
+        2,
+        930,
+        2048
+      ],
+      "mae": 0.012584932512163008,
+      "max_abs": 1.2134990990161896,
+      "rmse": 0.02171830583887265,
+      "nrmse": 0.02750089195885215,
+      "finite": true,
+      "passed": true
+    },
+    "aggregator/23": {
+      "shape": [
+        1,
+        2,
+        930,
+        2048
+      ],
+      "mae": 0.023387071907122893,
+      "max_abs": 1.5589555501937866,
+      "rmse": 0.03632472808820033,
+      "nrmse": 0.012071994398205837,
+      "finite": true,
+      "passed": true
+    }
+  },
+  "score_mae_limit": 0.05,
+  "strict_tracking": false
+}

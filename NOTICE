@@ -1,0 +1,11 @@
+VGGT-JAX adapts the architecture and operations of VGGT by Meta Platforms, Inc.
+and affiliates: https://github.com/facebookresearch/vggt
+Reference commit: a288dd0f14786c93483e45524328726ab7b1b4ce
+
+The upstream VGGT License is reproduced in LICENSE. The original VGGT-1B
+checkpoint has a separate non-commercial license; the gated
+VGGT-1B-Commercial checkpoint has its own terms on Hugging Face.
+
+The DINOv2-derived transformer layers in upstream VGGT contain Apache-2.0
+notices. Attribution and the Apache-2.0 license are retained in
+LICENSE-APACHE-2.0 for those derived components.

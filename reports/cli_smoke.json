@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "metrics": {
+    "images": {
+      "shape": [
+        1,
+        2,
+        3,
+        350,
+        518
+      ],
+      "nrmse": 0.0
+    },
+    "pose_enc": {
+      "shape": [
+        1,
+        2,
+        9
+      ],
+      "nrmse": 5.126299622876867e-07
+    },
+    "depth": {
+      "shape": [
+        1,
+        2,
+        350,
+        518,
+        1
+      ],
+      "nrmse": 1.7958976768863618e-06
+    },
+    "depth_conf": {
+      "shape": [
+        1,
+        2,
+        350,
+        518
+      ],
+      "nrmse": 2.5597223665085805e-06
+    },
+    "world_points": {
+      "shape": [
+        1,
+        2,
+        350,
+        518,
+        3
+      ],
+      "nrmse": 4.718877535512617e-06
+    },
+    "world_points_conf": {
+      "shape": [
+        1,
+        2,
+        350,
+        518
+      ],
+      "nrmse": 2.2325320688070823e-06
+    },
+    "extrinsic": {
+      "shape": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "finite": true
+    },
+    "intrinsic": {
+      "shape": [
+        1,
+        2,
+        3,
+        3
+      ],
+      "finite": true
+    }
+  }
+}

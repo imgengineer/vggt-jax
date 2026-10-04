@@ -1,0 +1,53 @@
+[project]
+name = "vggt-jax"
+version = "0.1.0"
+description = "VGGT in JAX and Flax NNX, compatible with official PyTorch checkpoints"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flax>=0.12.10",
+    "grain>=0.2.18",
+    "huggingface-hub>=2.1.1",
+    "jax[cuda13]>=0.11.2",
+    "numpy>=2.5.3",
+    "pillow>=12.3.0",
+    "safetensors>=0.8.0",
+    "tokamax>=0.0.15",
+    "triton>=3.8.0",
+]
+
+[project.scripts]
+vggt-jax = "vggt_jax.cli:main"
+
+[project.optional-dependencies]
+validation = [
+    "einops>=0.8.2",
+    "torch>=2.14.1",
+    "torchvision>=0.29.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+]

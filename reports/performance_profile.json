@@ -1,0 +1,137 @@
+{
+  "baseline": {
+    "gpu_attention_ms": 257.939674,
+    "gpu_total_ms": 345.289941,
+    "kernels": [
+      {
+        "name": "pallas_flash_attention",
+        "total_ms": 213.70398600000001,
+        "count": 48
+      },
+      {
+        "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_256x128_8x4_tn_align1>(cutlass_80_simt_sgemm_256x128_8x4_tn_align1::Params)",
+        "total_ms": 48.960851999999974,
+        "count": 216
+      },
+      {
+        "name": "pallas_flash_attention__1",
+        "total_ms": 44.235688,
+        "count": 24
+      },
+      {
+        "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_128x256_8x4_tn_align1>(cutlass_80_simt_sgemm_128x256_8x4_tn_align1::Params)",
+        "total_ms": 18.210545999999997,
+        "count": 72
+      },
+      {
+        "name": "void convolve_common_engine_float_NHWC<float, float, 512, 6, 8, 3, 3, 5, true, false, false, false, false>(int, int, int, float const*, float const*, int, float*, conv_kernel_common_params, unsigned long long, unsigned long, float, float, bool, float const*, float const*, bool, bool)",
+        "total_ms": 6.322742999999999,
+        "count": 16
+      },
+      {
+        "name": "void convolve_common_engine_float_NHWC<float, float, 128, 5, 5, 3, 3, 3, true, false, false, false, false>(int, int, int, float const*, float const*, int, float*, conv_kernel_common_params, unsigned long long, unsigned long, float, float, bool, float const*, float const*, bool, bool)",
+        "total_ms": 2.3154940000000006,
+        "count": 9
+      }
+    ]
+  },
+  "optimized_prototype": {
+    "gpu_attention_ms": 35.715234,
+    "gpu_total_ms": 138.41773100000003,
+    "kernels": [
+      {
+        "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_256x128_8x4_tn_align1>(cutlass_80_simt_sgemm_256x128_8x4_tn_align1::Params)",
+        "total_ms": 47.73143300000002,
+        "count": 216
+      },
+      {
+        "name": "pallas_flash_attention",
+        "total_ms": 18.107409,
+        "count": 48
+      },
+      {
+        "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_128x256_8x4_tn_align1>(cutlass_80_simt_sgemm_128x256_8x4_tn_align1::Params)",
+        "total_ms": 18.051886,
+        "count": 72
+      },
+      {
+        "name": "pallas_flash_attention__1",
+        "total_ms": 17.569683,
+        "count": 24
+      },
+      {
+        "name": "void convolve_common_engine_float_NHWC<float, float, 512, 6, 8, 3, 3, 5, true, false, false, false, false>(int, int, int, float const*, float const*, int, float*, conv_kernel_common_params, unsigned long long, unsigned long, float, float, bool, float const*, float const*, bool, bool)",
+        "total_ms": 12.598087000000001,
+        "count": 31
+      },
+      {
+        "name": "void convolve_common_engine_float_NHWC<float, float, 1024, 5, 5, 3, 3, 3, true, false, false, false, false>(int, int, int, float const*, float const*, int, float*, conv_kernel_common_params, unsigned long long, unsigned long, float, float, bool, float const*, float const*, bool, bool)",
+        "total_ms": 4.361044,
+        "count": 12
+      }
+    ]
+  },
+  "method": "JAX GPU profiler, sum of GPU kernel durations only; baseline trace has aggregator and depth, optimized trace has complete geometry model. Profiling overhead is separate from benchmark timings.",
+  "baseline_stage_timings": {
+    "aggregator": {
+      "median_ms": 329.55488143488765,
+      "samples_ms": [
+        329.3593809939921,
+        329.62139195296913,
+        329.02197004295886,
+        329.38615197781473,
+        329.37715004663914,
+        329.92572395596653,
+        330.07368398830295,
+        330.19895502366126,
+        329.48837091680616,
+        330.92722902074456
+      ]
+    },
+    "camera": {
+      "median_ms": 2.7698574704118073,
+      "samples_ms": [
+        2.7640319894999266,
+        2.7567429933696985,
+        2.780052018351853,
+        2.7815820649266243,
+        2.7643729699775577,
+        2.7368420269340277,
+        2.7543019969016314,
+        2.8022020123898983,
+        2.796003012917936,
+        2.775341970846057
+      ]
+    },
+    "depth": {
+      "median_ms": 13.69413553038612,
+      "samples_ms": [
+        13.724311022087932,
+        13.345498940907419,
+        13.533391058444977,
+        13.765761046670377,
+        13.52309004869312,
+        13.931012013927102,
+        13.870322029106319,
+        13.518110034056008,
+        13.663960038684309,
+        13.998112990520895
+      ]
+    },
+    "point": {
+      "median_ms": 13.671956025063992,
+      "samples_ms": [
+        13.483391026966274,
+        13.764101080596447,
+        13.690870022401214,
+        13.535609934478998,
+        13.679670984856784,
+        13.54663004167378,
+        13.664241065271199,
+        13.463979004882276,
+        13.889502035453916,
+        13.777201063930988
+      ]
+    }
+  }
+}

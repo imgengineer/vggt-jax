@@ -1,0 +1,721 @@
+{
+  "date_utc": "2026-10-04T02:49:17.115061+00:00",
+  "reference_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "checkpoint": ".cache/model.safetensors",
+  "input_shape": [
+    1,
+    2,
+    3,
+    350,
+    518
+  ],
+  "input_sha256": "c9fc80ca7b1127fe285a97a6df2775320b388051ff29138f45b485492c9ab111",
+  "warmup": 3,
+  "repeats": 20,
+  "timing": "synchronized wall time, model inference only; excludes loading, compilation, preprocessing, host/device transfers and output serialization",
+  "gpu": "NVIDIA GeForce RTX 5090, 615.71.09, 32607 MiB",
+  "parity_limits": {
+    "nrmse": 0.001,
+    "track_rmse_pixels": 1.0,
+    "score_mae": 0.05
+  },
+  "cases": {
+    "float32": {
+      "dtype": "float32",
+      "query_count": 0,
+      "torch": {
+        "torch": "2.14.1+cu130",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "official model.forward, eager, torch.no_grad",
+        "attention": "official torch.nn.functional.scaled_dot_product_attention",
+        "tf32": false,
+        "compile_seconds": null,
+        "first_forward_seconds": 0.44462655601091683,
+        "median_ms": 156.43244393868372,
+        "p10_ms": 156.07305808225647,
+        "p90_ms": 157.2654152638279,
+        "samples_ms": [
+          157.21523307729512,
+          156.3450190005824,
+          156.40763891860843,
+          156.20405902154744,
+          156.9844619370997,
+          156.07613697648048,
+          156.36774990707636,
+          158.0617860890925,
+          156.38354991097003,
+          156.803730991669,
+          156.62676002830267,
+          156.0881279874593,
+          156.457248958759,
+          156.0453480342403,
+          156.7035709740594,
+          156.87364106997848,
+          156.31198894698173,
+          155.85258707869798,
+          157.71705494262278,
+          156.6365510225296
+        ],
+        "setup_seconds": 5.0724586439318955
+      },
+      "jax": {
+        "jax": "0.11.2",
+        "flax": "0.12.10",
+        "tokamax": "0.0.15",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "nnx.jit of complete model.forward",
+        "attention": "Tokamax, implementation=None, precision=HIGHEST",
+        "optimization_level": "O1",
+        "xla_flags": "--xla_gpu_enable_command_buffer=",
+        "compile_seconds": 34.278420654009096,
+        "first_forward_seconds": 0.44541575002949685,
+        "median_ms": 401.34153998224065,
+        "p10_ms": 400.29341879999265,
+        "p90_ms": 600.2484460128471,
+        "samples_ms": [
+          400.3988259937614,
+          599.2081869626418,
+          400.02785401884466,
+          401.6123019391671,
+          402.5918450206518,
+          400.322925997898,
+          400.70633694995195,
+          599.8299500206485,
+          401.7026919173077,
+          401.20811900123954,
+          401.3197999447584,
+          398.9730989560485,
+          401.2343700742349,
+          611.1426510615274,
+          401.0325489798561,
+          401.3632800197229,
+          401.5790909761563,
+          403.0363680794835,
+          401.18307899683714,
+          604.0149099426344
+        ],
+        "setup_seconds": 2.7511800959473476
+      },
+      "speedup_torch_over_jax": 0.38977386678091147,
+      "parity_passed": true,
+      "metrics": {
+        "pose_enc": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.768498299902098e-07,
+          "max_abs": 5.960464477539062e-07,
+          "rmse": 2.5168703013515197e-07,
+          "nrmse": 4.83045177279458e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/0": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 7.974449545145035e-08,
+          "max_abs": 2.384185791015625e-07,
+          "rmse": 1.0796985380432127e-07,
+          "nrmse": 2.0715965756484668e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/1": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.0319207730289135e-07,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.4174654706051521e-07,
+          "nrmse": 2.720227891606288e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/2": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.4558918337570503e-07,
+          "max_abs": 4.172325134277344e-07,
+          "rmse": 2.0059388313719046e-07,
+          "nrmse": 3.849743399970736e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/3": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.768498299902098e-07,
+          "max_abs": 5.960464477539062e-07,
+          "rmse": 2.5168703013515197e-07,
+          "nrmse": 4.83045177279458e-07,
+          "finite": true,
+          "passed": true
+        },
+        "depth": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            1
+          ],
+          "mae": 6.852356097478598e-07,
+          "max_abs": 6.103515625e-05,
+          "rmse": 1.921962037727127e-06,
+          "nrmse": 1.5603147224291575e-06,
+          "finite": true,
+          "passed": true
+        },
+        "depth_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.372680174863871e-05,
+          "max_abs": 0.0009055137634277344,
+          "rmse": 2.7164249294444713e-05,
+          "nrmse": 2.4174714031289407e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            3
+          ],
+          "mae": 5.665187742907288e-07,
+          "max_abs": 0.0005917549133300781,
+          "rmse": 3.3319994900712775e-06,
+          "nrmse": 4.295215762674692e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.3354933860219123e-05,
+          "max_abs": 0.0004525184631347656,
+          "rmse": 2.1804505953576158e-05,
+          "nrmse": 1.858609785065788e-06,
+          "finite": true,
+          "passed": true
+        },
+        "images": {
+          "shape": [
+            1,
+            2,
+            3,
+            350,
+            518
+          ],
+          "mae": 0.0,
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "nrmse": 0.0,
+          "finite": true,
+          "passed": true
+        }
+      }
+    },
+    "float32-tracking": {
+      "dtype": "float32",
+      "query_count": 5,
+      "torch": {
+        "torch": "2.14.1+cu130",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "official model.forward, eager, torch.no_grad",
+        "attention": "official torch.nn.functional.scaled_dot_product_attention",
+        "tf32": false,
+        "compile_seconds": null,
+        "first_forward_seconds": 0.7705565049545839,
+        "median_ms": 367.084524477832,
+        "p10_ms": 365.3387347818352,
+        "p90_ms": 386.3623972632922,
+        "samples_ms": [
+          387.042214977555,
+          386.2868619617075,
+          392.0163370203227,
+          381.4730109879747,
+          365.4019869863987,
+          368.92782303038985,
+          366.37712095398456,
+          366.592762991786,
+          367.03579395543784,
+          364.769464940764,
+          366.44029105082154,
+          366.6333130095154,
+          367.1332550002262,
+          368.19112999364734,
+          366.264101001434,
+          374.5313480030745,
+          368.8278830377385,
+          371.7439559986815,
+          365.7481080153957,
+          363.22729801759124
+        ],
+        "setup_seconds": 4.829252850962803
+      },
+      "jax": {
+        "jax": "0.11.2",
+        "flax": "0.12.10",
+        "tokamax": "0.0.15",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "nnx.jit of complete model.forward",
+        "attention": "Tokamax, implementation=None, precision=HIGHEST",
+        "optimization_level": "O1",
+        "xla_flags": "--xla_gpu_enable_command_buffer=",
+        "compile_seconds": 125.40411517396569,
+        "first_forward_seconds": 0.49569674802478403,
+        "median_ms": 415.4974839184433,
+        "p10_ms": 414.737641857937,
+        "p90_ms": 711.6984304971993,
+        "samples_ms": [
+          711.5906369872391,
+          414.76273094303906,
+          415.5088838888332,
+          415.027033071965,
+          413.755465997383,
+          414.51184009201825,
+          414.9582009995356,
+          416.70632001478225,
+          735.0306740263477,
+          416.5768889943138,
+          415.4860839480534,
+          415.64560506958514,
+          414.97705201618373,
+          415.57985497638583,
+          415.03955191001296,
+          416.29269800614566,
+          415.40082392748445,
+          712.6685720868409,
+          415.0506320875138,
+          416.0853970097378
+        ],
+        "setup_seconds": 2.5792585369199514
+      },
+      "speedup_torch_over_jax": 0.8834819431779901,
+      "parity_passed": true,
+      "metrics": {
+        "pose_enc": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.768498299902098e-07,
+          "max_abs": 5.960464477539062e-07,
+          "rmse": 2.5168703013515197e-07,
+          "nrmse": 4.83045177279458e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/0": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 7.974449545145035e-08,
+          "max_abs": 2.384185791015625e-07,
+          "rmse": 1.0796985380432127e-07,
+          "nrmse": 2.0715965756484668e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/1": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.0319207730289135e-07,
+          "max_abs": 2.980232238769531e-07,
+          "rmse": 1.4174654706051521e-07,
+          "nrmse": 2.720227891606288e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/2": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.4558918337570503e-07,
+          "max_abs": 4.172325134277344e-07,
+          "rmse": 2.0059388313719046e-07,
+          "nrmse": 3.849743399970736e-07,
+          "finite": true,
+          "passed": true
+        },
+        "pose_enc_list/3": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 1.768498299902098e-07,
+          "max_abs": 5.960464477539062e-07,
+          "rmse": 2.5168703013515197e-07,
+          "nrmse": 4.83045177279458e-07,
+          "finite": true,
+          "passed": true
+        },
+        "depth": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            1
+          ],
+          "mae": 6.852356097478598e-07,
+          "max_abs": 6.103515625e-05,
+          "rmse": 1.921962037727127e-06,
+          "nrmse": 1.5603147224291575e-06,
+          "finite": true,
+          "passed": true
+        },
+        "depth_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.372680174863871e-05,
+          "max_abs": 0.0009055137634277344,
+          "rmse": 2.7164249294444713e-05,
+          "nrmse": 2.4174714031289407e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            3
+          ],
+          "mae": 5.665187742907288e-07,
+          "max_abs": 0.0005917549133300781,
+          "rmse": 3.3319994900712775e-06,
+          "nrmse": 4.295215762674692e-06,
+          "finite": true,
+          "passed": true
+        },
+        "world_points_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 1.3354933860219123e-05,
+          "max_abs": 0.0004525184631347656,
+          "rmse": 2.1804505953576158e-05,
+          "nrmse": 1.858609785065788e-06,
+          "finite": true,
+          "passed": true
+        },
+        "track": {
+          "shape": [
+            1,
+            2,
+            5,
+            2
+          ],
+          "mae": 0.19100682735443114,
+          "max_abs": 1.5855979919433594,
+          "rmse": 0.44967162690159784,
+          "nrmse": 0.0018164645587840313,
+          "finite": true,
+          "passed": true
+        },
+        "vis": {
+          "shape": [
+            1,
+            2,
+            5
+          ],
+          "mae": 0.009015348553657532,
+          "max_abs": 0.04181966185569763,
+          "rmse": 0.016903789660785946,
+          "nrmse": 0.021100147370559836,
+          "finite": true,
+          "passed": true
+        },
+        "conf": {
+          "shape": [
+            1,
+            2,
+            5
+          ],
+          "mae": 0.0011242890497669578,
+          "max_abs": 0.009151160717010498,
+          "rmse": 0.002930084855849558,
+          "nrmse": 0.003988936789050654,
+          "finite": true,
+          "passed": true
+        },
+        "images": {
+          "shape": [
+            1,
+            2,
+            3,
+            350,
+            518
+          ],
+          "mae": 0.0,
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "nrmse": 0.0,
+          "finite": true,
+          "passed": true
+        }
+      }
+    },
+    "bfloat16": {
+      "dtype": "bfloat16",
+      "query_count": 0,
+      "torch": {
+        "torch": "2.14.1+cu130",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "official model.forward, eager, torch.no_grad",
+        "attention": "official torch.nn.functional.scaled_dot_product_attention",
+        "tf32": false,
+        "compile_seconds": null,
+        "first_forward_seconds": 0.44931184803135693,
+        "median_ms": 82.50798401422799,
+        "p10_ms": 82.35524690244347,
+        "p90_ms": 82.6549390796572,
+        "samples_ms": [
+          82.31486310251057,
+          82.28062302805483,
+          82.68350502476096,
+          82.57583400700241,
+          82.47760497033596,
+          82.53568410873413,
+          82.41438400000334,
+          82.51375402323902,
+          82.41322403773665,
+          82.40615297108889,
+          82.42226403672248,
+          82.65176508575678,
+          82.56877399981022,
+          82.50221400521696,
+          82.3597339913249,
+          82.9239459708333,
+          82.51732401549816,
+          82.43152406066656,
+          82.63124502263963,
+          82.55919406656176
+        ],
+        "setup_seconds": 4.992266371031292
+      },
+      "jax": {
+        "jax": "0.11.2",
+        "flax": "0.12.10",
+        "tokamax": "0.0.15",
+        "device": "NVIDIA GeForce RTX 5090",
+        "execution": "nnx.jit of complete model.forward",
+        "attention": "Tokamax, implementation=None, precision=HIGHEST",
+        "optimization_level": "O1",
+        "xla_flags": "--xla_gpu_enable_command_buffer=",
+        "compile_seconds": 31.53158145607449,
+        "first_forward_seconds": 0.1415120210731402,
+        "median_ms": 97.76215301826596,
+        "p10_ms": 96.99668294051662,
+        "p90_ms": 298.9809984457679,
+        "samples_ms": [
+          97.79235301539302,
+          97.18687098938972,
+          98.04086503572762,
+          305.9933369513601,
+          97.00604004319757,
+          97.32931200414896,
+          96.91246901638806,
+          97.47026197146624,
+          97.64759300742298,
+          298.6542539438233,
+          96.80581896100193,
+          97.43608196731657,
+          97.57718292530626,
+          98.96633902098984,
+          102.31605404987931,
+          99.07995897810906,
+          301.9216989632696,
+          99.34141102712601,
+          99.92440300993621,
+          97.7319530211389
+        ],
+        "setup_seconds": 2.647113654995337
+      },
+      "speedup_torch_over_jax": 0.843966519424057,
+      "parity_passed": false,
+      "metrics": {
+        "pose_enc": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 0.0005051925171654956,
+          "max_abs": 0.002363443374633789,
+          "rmse": 0.0009343842667421386,
+          "nrmse": 0.0017925059362228742,
+          "finite": true,
+          "passed": false
+        },
+        "pose_enc_list/0": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 0.0005227816419493239,
+          "max_abs": 0.0025023221969604492,
+          "rmse": 0.0009649555384335834,
+          "nrmse": 0.001850597519402239,
+          "finite": true,
+          "passed": false
+        },
+        "pose_enc_list/1": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 0.0005089403952701509,
+          "max_abs": 0.002395451068878174,
+          "rmse": 0.0009384325876595752,
+          "nrmse": 0.0018001245018584033,
+          "finite": true,
+          "passed": false
+        },
+        "pose_enc_list/2": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 0.0005064210499767796,
+          "max_abs": 0.0023750662803649902,
+          "rmse": 0.0009355339865668477,
+          "nrmse": 0.0017946559696005724,
+          "finite": true,
+          "passed": false
+        },
+        "pose_enc_list/3": {
+          "shape": [
+            1,
+            2,
+            9
+          ],
+          "mae": 0.0005051925171654956,
+          "max_abs": 0.002363443374633789,
+          "rmse": 0.0009343842667421386,
+          "nrmse": 0.0017925059362228742,
+          "finite": true,
+          "passed": false
+        },
+        "depth": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            1
+          ],
+          "mae": 0.003873144798658858,
+          "max_abs": 0.1707066297531128,
+          "rmse": 0.008170383666598332,
+          "nrmse": 0.006651990700820953,
+          "finite": true,
+          "passed": false
+        },
+        "depth_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 0.10916723450901623,
+          "max_abs": 1.640732765197754,
+          "rmse": 0.1626560488805389,
+          "nrmse": 0.01457339834678207,
+          "finite": true,
+          "passed": false
+        },
+        "world_points": {
+          "shape": [
+            1,
+            2,
+            350,
+            518,
+            3
+          ],
+          "mae": 0.0024765807025877496,
+          "max_abs": 0.8727027177810669,
+          "rmse": 0.013001949158905854,
+          "nrmse": 0.01680024967551511,
+          "finite": true,
+          "passed": false
+        },
+        "world_points_conf": {
+          "shape": [
+            1,
+            2,
+            350,
+            518
+          ],
+          "mae": 0.07443159939765404,
+          "max_abs": 1.1574373245239258,
+          "rmse": 0.11055140617504984,
+          "nrmse": 0.00947056695856357,
+          "finite": true,
+          "passed": false
+        },
+        "images": {
+          "shape": [
+            1,
+            2,
+            3,
+            350,
+            518
+          ],
+          "mae": 0.0,
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "nrmse": 0.0,
+          "finite": true,
+          "passed": true
+        }
+      }
+    }
+  }
+}

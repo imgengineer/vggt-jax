@@ -142,7 +142,7 @@ def worker(args):
             "jax": jax.__version__,
             "flax": flax.__version__,
             "tokamax": tokamax.__version__,
-            "attention": "Tokamax, implementation=None; FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+            "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
             "optimization_level": jax.config.jax_optimization_level,
             "device": str(jax.devices()),
         }

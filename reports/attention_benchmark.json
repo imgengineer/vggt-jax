@@ -13,11 +13,12 @@
         64
       ],
       "precision": "TF32_TF32_F32_X3",
+      "implementation": "triton",
       "median_ms": {
-        "tokamax": 0.9858644916675985,
-        "jax_xla": 0.9117540321312845
+        "tokamax": 0.9919589501805604,
+        "jax_xla": 0.9298489894717932
       },
-      "speedup": 0.9248269309193239,
+      "speedup": 0.9373865615129924,
       "nrmse_vs_xla": 9.628518000681652e-07,
       "custom_kernel_in_hlo": true
     },
@@ -29,11 +30,12 @@
         64
       ],
       "precision": "HIGHEST",
+      "implementation": "triton",
       "median_ms": {
-        "tokamax": 0.15899050049483776,
-        "jax_xla": 0.5581724690273404
+        "tokamax": 0.17585052410140634,
+        "jax_xla": 0.5481569096446037
       },
-      "speedup": 3.5107284227051268,
+      "speedup": 3.1171752967224733,
       "nrmse_vs_xla": 0.0029980591498315334,
       "custom_kernel_in_hlo": true
     }

@@ -26,7 +26,7 @@
     "jax": "0.11.2",
     "flax": "0.12.10",
     "tokamax": "0.0.15",
-    "attention": "tokamax.dot_product_attention(implementation=None, precision=HIGHEST)",
+    "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
     "device": "[CudaDevice(id=0)]",
     "elapsed_seconds_with_loading_and_compilation": 80.3733931670431
   },

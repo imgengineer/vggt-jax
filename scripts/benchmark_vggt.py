@@ -137,7 +137,7 @@ def worker(args):
             "tokamax": tokamax.__version__,
             "device": jax.devices()[0].device_kind,
             "execution": "model.jit(): nnx.jit_partial(graph=False) of complete model.forward",
-            "attention": "Tokamax, implementation=None; FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+            "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
             "optimization_level": jax.config.jax_optimization_level,
             "xla_flags": os.environ.get("XLA_FLAGS", ""),
             "compile_seconds": compile_seconds,

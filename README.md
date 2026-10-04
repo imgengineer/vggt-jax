@@ -16,7 +16,7 @@ VGGT-JAX predicts camera parameters, depth maps, world-space point maps and poin
 
 - **Official checkpoint compatibility:** all 1,797 parameter keys and 1,256,537,516 parameters match the reference model. Load Hugging Face weights, local safetensors, or a PyTorch state dict.
 - **Complete prediction heads:** DINOv2 encoder, alternating frame/global attention, iterative camera prediction, depth/point DPT heads, and the iterative tracker.
-- **Tokamax attention by default:** GPU kernels selected by Tokamax, with a CPU implementation for tests.
+- **Tokamax high-performance attention:** GPU inference explicitly uses the fused Pallas Triton FlashAttention kernel; CPU uses Tokamax's XLA implementation for tests.
 - **JAX O1 by default:** reusable compiled inference through `model.jit()`, with model parameters kept as `nnx.Param`.
 - **Measured parity and performance:** the tested FP32 runs meet the documented tolerances. On an RTX 5090, inference takes 140 ms for geometry and 153 ms with five tracked points, versus 156 ms and 395 ms for the official PyTorch eager baseline.
 
@@ -205,6 +205,8 @@ The reference is the official PyTorch eager `model.forward` with `torch.no_grad(
 
 **FP32 is the default for numerical parity.** BF16 is faster but fails the selected geometry tolerances. The first JAX compilations took approximately 34 s, 124 s and 31 s respectively; these times are excluded from the table.
 
+After switching from automatic dispatch to explicit `implementation="triton"`, a fresh five-repeat run measured 139.92 ms for geometry and 152.24 ms with tracking; parity passed in both cases. The full run is recorded in [the explicit-Triton report](reports/speed_explicit_triton.json).
+
 Versions, settings, all 20 latency samples and output errors are available in [the full benchmark report](reports/speed_benchmark.json). [The earlier baseline](reports/speed_baseline.json) records JAX timings of 401 ms for FP32 geometry and 416 ms with tracking, before the attention and NNX cache optimizations.
 
 ### Numerical parity
@@ -229,7 +231,7 @@ The tracker amplifies small floating-point differences through iterative high-fr
 <details>
 <summary>Attention precision and NNX caching</summary>
 
-Attention calls `tokamax.dot_product_attention(..., implementation=None)`. On the tested RTX 5090, Tokamax selects Pallas Triton kernels. FP32 attention on NVIDIA SM80+ uses `TF32_TF32_F32_X3`, combining three Tensor Core products with FP32 accumulation. Tracker attention, other devices, BF16 attention, linear layers and convolutions use `HIGHEST`. BF16 mode changes backbone linear/convolution computations; prediction heads remain FP32.
+Attention calls `tokamax.dot_product_attention(..., implementation="triton")` on GPU and `implementation="xla"` on CPU. This explicitly selects Tokamax's fused Pallas Triton FlashAttention kernel for GPU inference instead of relying on automatic dispatch. FP32 attention on NVIDIA SM80+ uses `TF32_TF32_F32_X3`, combining three Tensor Core products with FP32 accumulation. Tracker attention, other devices, BF16 attention, linear layers and convolutions use `HIGHEST`. BF16 mode changes backbone linear/convolution computations; prediction heads remain FP32.
 
 Importing `vggt_jax` sets [JAX's optimization level](https://docs.jax.dev/en/latest/config_options.html#optimization-level) to O1 if no explicit configuration exists. Set `JAX_OPTIMIZATION_LEVEL=O2` before running, or call `jax.config.update` to override it.
 

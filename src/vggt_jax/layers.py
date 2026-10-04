@@ -131,6 +131,11 @@ def attention_precision(dtype):
     return jax.lax.Precision.HIGHEST
 
 
+def attention_implementation():
+    """Select Tokamax's fused GPU kernel or its portable XLA implementation."""
+    return "triton" if jax.default_backend() == "gpu" else "xla"
+
+
 def attention(q, k, v, *, scale=None, precision=None):
     return tokamax.dot_product_attention(
         q,
@@ -138,7 +143,7 @@ def attention(q, k, v, *, scale=None, precision=None):
         v,
         scale=scale,
         precision=attention_precision(q.dtype) if precision is None else precision,
-        implementation=None,
+        implementation=attention_implementation(),
     )
 
 

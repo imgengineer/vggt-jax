@@ -14,7 +14,7 @@ import jax.numpy as jnp
 import numpy as np
 import tokamax
 
-from vggt_jax.layers import attention, attention_precision
+from vggt_jax.layers import attention, attention_implementation, attention_precision
 
 
 def main():
@@ -60,6 +60,7 @@ def main():
         results[jnp.dtype(dtype).name] = {
             "shape": list(shape),
             "precision": str(attention_precision(dtype)),
+            "implementation": attention_implementation(),
             "median_ms": timings,
             "speedup": timings["jax_xla"] / timings["tokamax"],
             "nrmse_vs_xla": nrmse,

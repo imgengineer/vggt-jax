@@ -207,6 +207,27 @@ The reference is the official PyTorch eager `model.forward` with `torch.no_grad(
 
 Tokamax kernel autotuning reduces geometry latency from 139.92 ms to 127.78 ms, an additional 8.7%. Tracking improves from 152.24 ms to 139.54 ms, an additional 8.3%. See [the tuned benchmark](reports/speed_tokamax_tuned.json), [the tracking repeat](reports/speed_tokamax_tracking_repeat.json), and [the earlier explicit-Triton benchmark](reports/speed_explicit_triton.json). The first tuned tracking run had variable PyTorch latency (490–608 ms at p10/p90); the table uses the steadier independent repeat. JAX compilation took 25.5 s for geometry and 89.0 s for the tracking repeat.
 
+#### Ten-view comparison
+
+We also ran the same official kitchen sequence with ten views (`00.png` through `09.png`), input shape `[1, 10, 3, 350, 518]`, and five tracking queries. The input image SHA-256 is `afad93afcd3af466acc332eea04117d25ec50e5d6c6b848231882f3c580628cc`. The benchmark used FP32, three warmup calls and 20 synchronized calls on the same RTX 5090.
+
+| Mode | Official PyTorch | JAX / Tokamax Triton O1 | Speedup | Parity |
+|---|---:|---:|---:|---|
+| Ten-view cameras, depth and points | 879.05 ms | 951.39 ms | 0.92× | Pass |
+| Ten-view geometry + five tracked points | 1206.21 ms | **987.25 ms** | **1.22×** | Tracking fail |
+
+Geometry remains very close to the official output (`depth` NRMSE `1.37e-6`, `world_points` NRMSE `4.73e-6`). The default Tokamax Triton tracker has `2.292` px RMSE, `0.00712` visibility MAE and `0.00115` confidence MAE. Thus it passes the geometry and score limits but exceeds the selected one-pixel tracking limit; the longer sequence amplifies small floating-point differences in the iterative tracker. The official PyTorch run peaked at 8.18 GB allocated and 10.67 GB reserved. JAX's peak device usage, including compilation, was 14.47 GB for geometry and 14.80 GB with tracking; the compiled executable's argument buffers were 4.78 GB and 5.05 GB respectively.
+
+The tracker attention trial kept the same ten-view inputs and timing protocol. Tokamax XLA was marginally faster in this sample, but its tracking RMSE was higher; native JAX SDPA was less accurate. The default remains Tokamax Triton because it gave the lowest tracking error and uses the fused GPU path:
+
+| Tracker attention | Median | Speedup vs PyTorch | Track RMSE |
+|---|---:|---:|---:|
+| Tokamax Triton (default) | 987.25 ms | 1.222× | **2.292 px** |
+| Tokamax XLA (`VGGT_TRACK_ATTENTION_IMPLEMENTATION=xla`) | 986.73 ms | 1.222× | 2.442 px |
+| JAX native SDPA (`VGGT_TRACK_ATTENTION_IMPLEMENTATION=jax_xla`) | 987.12 ms | 1.222× | 3.283 px |
+
+See the complete [ten-view benchmark](reports/speed_10views.json) and [attention trial report](reports/speed_10views_attention_trials.json), including every latency sample and output metric.
+
 Versions, settings, all latency samples and output errors are included in the reports. [The earlier mixed-precision benchmark](reports/speed_benchmark.json) records the BF16 comparison. [The earlier baseline](reports/speed_baseline.json) records JAX timings of 401 ms for FP32 geometry and 416 ms with tracking, before the attention and NNX cache optimizations.
 
 ### Numerical parity
@@ -234,6 +255,8 @@ The tracker amplifies small floating-point differences through iterative high-fr
 Attention calls `tokamax.dot_product_attention(..., implementation="triton")` on GPU and `implementation="xla"` on CPU. This explicitly selects Tokamax's fused Pallas Triton FlashAttention kernel for GPU inference instead of relying on automatic dispatch. FP32 attention on NVIDIA SM80+ uses `TF32_TF32_F32_X3`, combining three Tensor Core products with FP32 accumulation. Tracker attention, other devices, BF16 attention, linear layers and convolutions use `HIGHEST`. BF16 mode changes backbone linear/convolution computations; prediction heads remain FP32.
 
 The package includes a serialized Tokamax autotuning cache for the RTX 5090 and the tested FP32 frame/global/virtual-track shapes. It loads lazily, checks the device and Tokamax version, and applies matching entries during JAX tracing. Other shapes use Tokamax's normal configuration selection. Set `VGGT_TOKAMAX_AUTOTUNE` before importing the package to use another cache file; an empty value disables the packaged cache. This cache stores kernel configurations. `model.jit()` separately caches the NNX parameter structure and XLA executable in the process.
+
+The default tracker attention is also Tokamax Triton. For experiments, set `VGGT_TRACK_ATTENTION_IMPLEMENTATION` to `triton`, `xla`, `xla_chunked`, or `jax_xla` before importing the model. The override is intended for comparison; the ten-view trial above selected the default Triton path.
 
 Importing `vggt_jax` sets [JAX's optimization level](https://docs.jax.dev/en/latest/config_options.html#optimization-level) to O1 if no explicit configuration exists. Set `JAX_OPTIMIZATION_LEVEL=O2` before running, or call `jax.config.update` to override it.
 

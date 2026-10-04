@@ -78,6 +78,7 @@ def worker(args):
             else contextlib.nullcontext()
         )
         # The official forward keeps camera/depth/point heads outside autocast.
+        torch.cuda.reset_peak_memory_stats()
         with torch.no_grad(), autocast:
             output, timing = measure(
                 lambda: model(images, queries),
@@ -96,6 +97,8 @@ def worker(args):
             "attention": "official torch.nn.functional.scaled_dot_product_attention",
             "tf32": False,
             "compile_seconds": None,
+            "peak_inference_allocated_bytes": torch.cuda.max_memory_allocated(),
+            "peak_inference_reserved_bytes": torch.cuda.max_memory_reserved(),
         }
     else:
         os.environ.setdefault("XLA_PYTHON_CLIENT_PREALLOCATE", "false")
@@ -108,7 +111,10 @@ def worker(args):
         from flax import nnx
 
         from vggt_jax import VGGT
-        from vggt_jax.layers import _attention_autotuning_cache
+        from vggt_jax.layers import (
+            _attention_autotuning_cache,
+            attention_implementation,
+        )
 
         if jax.default_backend() != "gpu":
             raise RuntimeError("This benchmark requires a JAX GPU backend")
@@ -133,13 +139,15 @@ def worker(args):
             for key, value in flatten_predictions(output).items()
         }
         cache = _attention_autotuning_cache()
+        memory = compiled.memory_analysis()
+        tracker_attention = attention_implementation(tracker=True)
         meta = {
             "jax": jax.__version__,
             "flax": flax.__version__,
             "tokamax": tokamax.__version__,
             "device": jax.devices()[0].device_kind,
             "execution": "model.jit(): nnx.jit_partial(graph=False) of complete model.forward",
-            "attention": "Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker HIGHEST",
+            "attention": f"Tokamax, implementation=triton on GPU (xla on CPU); FP32 SM80+: TF32_TF32_F32_X3, otherwise HIGHEST; tracker implementation={tracker_attention}",
             "tokamax_autotuning_cache_sha256": (
                 hashlib.sha256(cache.dumps(prune_errors=True).encode()).hexdigest()
                 if cache is not None
@@ -148,6 +156,18 @@ def worker(args):
             "optimization_level": jax.config.jax_optimization_level,
             "xla_flags": os.environ.get("XLA_FLAGS", ""),
             "compile_seconds": compile_seconds,
+            "compiled_memory_bytes": {
+                key: getattr(memory, key)
+                for key in (
+                    "argument_size_in_bytes",
+                    "output_size_in_bytes",
+                    "temp_size_in_bytes",
+                    "alias_size_in_bytes",
+                )
+            },
+            "device_memory_stats_including_compilation": jax.devices()[
+                0
+            ].memory_stats(),
         }
     meta.update(timing, setup_seconds=setup_seconds)
     np.savez(args.work_dir / f"{args.backend}.npz", **arrays)

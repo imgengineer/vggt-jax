@@ -159,13 +159,17 @@ def attention_precision(dtype):
     return jax.lax.Precision.HIGHEST
 
 
-def attention_implementation():
-    """Select Tokamax's fused GPU kernel or its portable XLA implementation."""
+def attention_implementation(*, tracker=False):
+    """Select the tracker override or Tokamax's normal implementation."""
+    if tracker:
+        selected = os.environ.get("VGGT_TRACK_ATTENTION_IMPLEMENTATION")
+        if selected in {"triton", "xla", "xla_chunked", "jax_xla"}:
+            return selected
     return "triton" if jax.default_backend() == "gpu" else "xla"
 
 
 def attention(q, k, v, *, scale=None, precision=None):
-    implementation = attention_implementation()
+    implementation = attention_implementation(tracker=scale == 1.0)
     cache = _attention_autotuning_cache()
     cache_context = (
         cache
@@ -173,6 +177,10 @@ def attention(q, k, v, *, scale=None, precision=None):
         else contextlib.nullcontext()
     )
     with cache_context:
+        if implementation == "jax_xla":
+            return jax.nn.dot_product_attention(
+                q, k, v, scale=scale, implementation="xla"
+            )
         return tokamax.dot_product_attention(
             q,
             k,

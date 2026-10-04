@@ -1,0 +1,136 @@
+{
+  "date_utc": "2026-10-04T08:50:04.799192+00:00",
+  "reference_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+  "checkpoint": ".cache/model.safetensors",
+  "input_shape": [
+    1,
+    10,
+    3,
+    350,
+    518
+  ],
+  "input_sha256": "afad93afcd3af466acc332eea04117d25ec50e5d6c6b848231882f3c580628cc",
+  "warmup": 3,
+  "repeats": 20,
+  "gpu": "NVIDIA GeForce RTX 5090, 615.71.09, 32607 MiB",
+  "timing": "synchronized wall time, model inference only; excludes loading, compilation, preprocessing, host/device transfers and output serialization",
+  "parity_limits": {
+    "nrmse": 0.001,
+    "track_rmse_pixels": 1.0,
+    "score_mae": 0.05
+  },
+  "geometry": {
+    "official_torch_median_ms": 879.0490679675713,
+    "jax_tokamax_triton_median_ms": 951.3898850418627,
+    "speedup_torch_over_jax": 0.9239630164124477,
+    "parity_passed": true,
+    "depth_nrmse": 1.36596173580498e-06,
+    "world_points_nrmse": 4.732574064362063e-06
+  },
+  "tracking_official_torch_median_ms": 1206.2129019759595,
+  "variants": [
+    {
+      "name": "tokamax_triton",
+      "implementation": "Tokamax Triton (default)",
+      "environment": {},
+      "median_ms": 987.2545109828934,
+      "p10_ms": 984.9433788913302,
+      "p90_ms": 996.88971855212,
+      "speedup_vs_official_torch": 1.221785151201867,
+      "track": {
+        "mae": 0.9412300306558609,
+        "rmse": 2.292240852547339,
+        "max_abs": 10.563140869140625,
+        "nrmse": 0.009646825016701955,
+        "passed": false
+      },
+      "vis": {
+        "mae": 0.007115760948508978,
+        "rmse": 0.009855412648800431,
+        "max_abs": 0.029437169432640076,
+        "nrmse": 0.023457494505620582,
+        "passed": true
+      },
+      "conf": {
+        "mae": 0.0011474152337177656,
+        "rmse": 0.0028154967598671213,
+        "max_abs": 0.014406740665435791,
+        "nrmse": 0.008006225076781387,
+        "passed": true
+      },
+      "parity_passed": false
+    },
+    {
+      "name": "tokamax_xla",
+      "implementation": "Tokamax XLA",
+      "environment": {
+        "VGGT_TRACK_ATTENTION_IMPLEMENTATION": "xla"
+      },
+      "median_ms": 986.7256435099989,
+      "p10_ms": 984.9176918622106,
+      "p90_ms": 987.9140794859268,
+      "speedup_vs_official_torch": 1.2224400064086673,
+      "track": {
+        "mae": 0.9606568169593811,
+        "rmse": 2.4421010685528652,
+        "max_abs": 15.187196731567383,
+        "nrmse": 0.01027750711939806,
+        "passed": false
+      },
+      "vis": {
+        "mae": 0.005684674326330423,
+        "rmse": 0.008689281731319907,
+        "max_abs": 0.02694118022918701,
+        "nrmse": 0.020681912136376695,
+        "passed": true
+      },
+      "conf": {
+        "mae": 0.001026555812713923,
+        "rmse": 0.0019656387054877394,
+        "max_abs": 0.007708191871643066,
+        "nrmse": 0.005589545021003957,
+        "passed": true
+      },
+      "parity_passed": false
+    },
+    {
+      "name": "jax_xla",
+      "implementation": "JAX native SDPA (XLA)",
+      "environment": {
+        "VGGT_TRACK_ATTENTION_IMPLEMENTATION": "jax_xla"
+      },
+      "median_ms": 987.1237954939716,
+      "p10_ms": 985.9401040594094,
+      "p90_ms": 989.4569861702621,
+      "speedup_vs_official_torch": 1.2219469406796668,
+      "track": {
+        "mae": 1.2582414221763611,
+        "rmse": 3.283184207543248,
+        "max_abs": 26.200546264648438,
+        "nrmse": 0.01381717960072649,
+        "passed": false
+      },
+      "vis": {
+        "mae": 0.008473019851371645,
+        "rmse": 0.013507927274218826,
+        "max_abs": 0.04755564033985138,
+        "nrmse": 0.03215107688625072,
+        "passed": true
+      },
+      "conf": {
+        "mae": 0.0020128542149905116,
+        "rmse": 0.004714109731793973,
+        "max_abs": 0.022520780563354492,
+        "nrmse": 0.013405173853288094,
+        "passed": true
+      },
+      "parity_passed": false
+    }
+  ],
+  "selected_default": "tokamax_triton",
+  "notes": [
+    "All variants use the same official checkpoint, ten preprocessed kitchen views, five queries, FP32, and compiled model.jit() inference.",
+    "The default Tokamax Triton tracker has the lowest tracking RMSE; Tokamax XLA is 0.05% faster in this sample but has higher tracking error.",
+    "Ten-view geometry meets the NRMSE limit; all tested ten-view tracking variants exceed the 1 pixel RMSE limit."
+  ]
+}
